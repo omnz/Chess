@@ -1,10 +1,14 @@
 class Board:
+    """Chess board model"""
+    
     def __init__(self):
+        """Initialize board attributes"""
         self.rows = 8
         self.cols = 8
         self.board = [[0]*self.cols for _ in range(0, self.rows)]
     
     def setup(self):
+        """Setup the initial board state"""
         for x in range(0, self.cols):
             if(x == 0 or x == 7):
                 self.board[x][0] = "R"
@@ -20,6 +24,7 @@ class Board:
                     self.board[x][y] = "P"
 
     def display(self):
+        """Print out the current state of the board"""
         for row in self.board:
             for x in row:
                 print(f" {x} ", end='')
