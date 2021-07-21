@@ -5,3 +5,4 @@ class Pawn:
         """Initialize piece attributes"""
         self.display = 'P'
     # def move():
+    # def canMove():
