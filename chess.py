@@ -1,6 +1,7 @@
 from board import Board
 from player import Player
 
+# Create players and board
 p1 = Player('Player 1')
 p2 = Player('Player 2')
 board = Board()
