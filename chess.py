@@ -1,10 +1,6 @@
 from board import Board
 from player import Player
 
-# 
-# board.setup()
-# board.display()
-
 p1 = Player('Player 1')
 p2 = Player('Player 2')
 board = Board()
