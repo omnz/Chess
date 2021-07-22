@@ -10,7 +10,7 @@ class Player:
         """Initialize player's attributes and pieces"""
         self.name = name
         self.pieces = []
-        self.isTurn = False
+        self.is_turn = False
         self.piece_color = None
         
         self.build_pieces()
@@ -32,8 +32,12 @@ class Player:
         return self.piece_color
 
     def turn(self):
-        """Switch isTurn to True/False"""
-        self.isTurn != self.isTurn
+        """Switch is_turn and player's pieces' can_move to True/False"""
+        self.is_turn = not self.is_turn
+        
+        # Switch pieces to be able to move/not move
+        for piece in self.pieces:
+            piece.flip_can_move()
 
     def build_pieces(self):
         """Build list of all pieces"""
@@ -46,3 +50,5 @@ class Player:
             self.pieces.append(p())
         
     # def checkKing():
+        # if king is in danger
+        # if king is no longer in play then game over
