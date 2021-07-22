@@ -40,10 +40,28 @@ class Board:
 
     def display(self):
         """Print out the current state of the board"""
+        counter = self.cols
+        letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+
         for row in self.board:
+            print(f"{counter} | ", end='')
+            counter -= 1
+
             for piece in row:
                 if piece == 0:
                     print(f" {piece} ", end='')
                 else:
                     print(f" {piece.display} ", end='')
             print()
+        
+        # Print line of hyphens
+        print("  ", end='')
+        for x in range(0, len(letters) * 4 - 6):
+            print("-", end='')
+        print()
+        print("    ", end='')
+
+        # Print list of letters
+        for letter in letters:
+            print(f" {letter} ", end='')
+        print()
