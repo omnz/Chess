@@ -1,5 +1,8 @@
+import pygame
+from pygame.constants import KEYDOWN, QUIT
 from board import Board
 from player import Player
+
 
 # Create players and board
 p1 = Player('Player 1')
@@ -34,24 +37,68 @@ print()
 
 # Setup the board
 if(p1.get_piece_color() == 'white'):
+    p1.build_pieces('white')
+    p2.build_pieces('black')
     board.setup(p1, p2)
     p1.turn()
+    
 
     turn_order.append(p1)
     turn_order.append(p2)
 else:
+    p1.build_pieces('black')
+    p2.build_pieces('white')
     board.setup(p2, p1)
     p2.turn()
     
     turn_order.append(p2)
     turn_order.append(p1)
 
-board.display()
-# print(p1.pieces[0].can_move)
-# print(p2.pieces[0].can_move)
+# GAME
+pygame.init()
+size = 650, 650
+black = 0, 0, 0
+screen = pygame.display.set_mode(size)
+first = 65
+x = first
+y = first
+
+# Draw board
+for row in board.board:
+    for n in row:
+        square = n['color'].convert()
+        screen.blit(square, (x, y))
+        x += 65
+    y += 65
+    x = first
+
+pygame.display.update()
+
+# Draw the pieces
+x = first
+y = first
+
+for row in board.board:
+    for p in row:
+        if p['piece'] != 0:
+            piece = p['piece']['img'].convert_alpha()
+            screen.blit(piece, (x, y))
+        x += 65
+    y += 65
+    x = first
+pygame.display.update()
 
 # Game Loop
-# while game_over == False:
+while game_over == False:
+    for event in pygame.event.get():
+        if event.type in (QUIT, KEYDOWN):
+            game_over = True
+    
+    # W.I.P.: Turns
+    pygame.display.update()
+
+pygame.quit()
+
 #     for player in turn_order:
 #         while True:
 #             piece_to_move = input("Enter coordinates of piece you wish to move: ")
