@@ -10,7 +10,7 @@ p2 = Player('Player 2')
 board = Board()
 
 turn_order = []
-game_over = False
+running = True
 winner = ''
 
 # Ask first player for piece color
@@ -56,6 +56,9 @@ else:
 
 # GAME
 pygame.init()
+pygame.display.set_caption('Chess')
+icon = pygame.image.load('Sprites/king_black.png')
+pygame.display.set_icon(icon)
 size = 650, 650
 black = 0, 0, 0
 screen = pygame.display.set_mode(size)
@@ -89,10 +92,10 @@ for row in board.board:
 pygame.display.update()
 
 # Game Loop
-while game_over == False:
+while running:
     for event in pygame.event.get():
         if event.type in (QUIT, KEYDOWN):
-            game_over = True
+            running = False
     
     # W.I.P.: Turns
     pygame.display.update()
