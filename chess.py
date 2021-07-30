@@ -55,7 +55,6 @@ else:
 
 # GAME
 pygame.init()
-pygame.font.init()
 pygame.display.set_caption('Chess')
 icon = pygame.image.load('Sprites/king_black.png')
 pygame.display.set_icon(icon)
@@ -66,18 +65,30 @@ text_player = pygame.image.load('Sprites/text_player.png')
 text_p1 = pygame.image.load('Sprites/one.png')
 text_p2 = pygame.image.load('Sprites/two.png')
 
-padding = (5, 5)
 white = (255, 255, 255)
 black = (0, 0, 0)
 font = pygame.font.Font('freesansbold.ttf', 20)
-text = font.render(f'Player: 1 ({p1.get_piece_color().title()})', True, white, black)
-screen.blit(text, padding)
+text_turn = ''
+text_total_turns = ''
+total_turns = 0
+
+# Display 1st turn
+if p1.get_piece_color() == 'white':
+    text_turn = font.render(f'Turn: {p1.get_name()} ({p1.get_piece_color().title()})', True, white, black)
+else:
+    text_turn = font.render(f'Turn: {p2.get_name()} ({p2.get_piece_color().title()})', True, white, black)
+
+text_total_turns = font.render(f'Total turns: {total_turns}', True, white, black)
+
+offset = 10
+screen.blit(text_turn, (offset, offset))
+screen.blit(text_total_turns, (475, offset))
 pygame.display.update()
 
 
 padding = 65
 x = padding
-y = padding
+y = padding + offset
 
 # Draw the board
 for row in board.board:
@@ -90,7 +101,7 @@ for row in board.board:
 pygame.display.update()
 
 x = padding
-y = padding
+y = padding + offset
 
 # Draw the pieces
 for row in board.board:
