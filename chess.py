@@ -37,12 +37,17 @@ print()
 
 # Setup the board
 if(p1.get_piece_color() == 'white'):
+    p1.build_pieces('white')
+    p2.build_pieces('black')
     board.setup(p1, p2)
     p1.turn()
+    
 
     turn_order.append(p1)
     turn_order.append(p2)
 else:
+    p1.build_pieces('black')
+    p2.build_pieces('white')
     board.setup(p2, p1)
     p2.turn()
     
@@ -67,6 +72,20 @@ for row in board.board:
     y += 65
     x = first
 
+pygame.display.update()
+
+# Draw the pieces
+x = first
+y = first
+
+for row in board.board:
+    for p in row:
+        if p['piece'] != 0:
+            piece = p['piece']['img'].convert_alpha()
+            screen.blit(piece, (x, y))
+        x += 65
+    y += 65
+    x = first
 pygame.display.update()
 
 # Game Loop
