@@ -4,6 +4,7 @@ from Pieces.bishop import Bishop
 from Pieces.king import King
 from Pieces.knight import Knight
 from Pieces.queen import Queen
+import pygame
 
 class Player:
     def __init__(self, name):
@@ -13,7 +14,7 @@ class Player:
         self.is_turn = False
         self.piece_color = None
         
-        self.build_pieces()
+        # self.build_pieces()
     
     def set_name(self, name):
         """Set the player's name"""
@@ -37,17 +38,25 @@ class Player:
         
         # Switch pieces to be able to move/not move
         for piece in self.pieces:
-            piece.flip_can_move()
+            piece['piece'].flip_can_move()
 
-    def build_pieces(self):
+    def build_pieces(self, color):
         """Build list of all pieces"""
         for p in range(0, 8):
-            self.pieces.append(Pawn())
+            self.pieces.append({'piece': Pawn(), 'img': pygame.image.load(f'Sprites/pawn_{color}.png')})
         
-        otherPieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+        otherPieces = [
+            {'piece': Rook(), 'img': pygame.image.load(f'Sprites/rook_{color}.png')},
+            {'piece': Knight(), 'img': pygame.image.load(f'Sprites/knight_{color}.png')},
+            {'piece': Bishop(), 'img': pygame.image.load(f'Sprites/bishop_{color}.png')},
+            {'piece': Queen(), 'img': pygame.image.load(f'Sprites/queen_{color}.png')}, 
+            {'piece': King(), 'img': pygame.image.load(f'Sprites/king_{color}.png')},
+            {'piece': Bishop(), 'img': pygame.image.load(f'Sprites/bishop_{color}.png')},
+            {'piece': Knight(), 'img': pygame.image.load(f'Sprites/knight_{color}.png')},
+            {'piece': Rook(), 'img': pygame.image.load(f'Sprites/rook_{color}.png')}]
 
         for p in otherPieces:
-            self.pieces.append(p())
+            self.pieces.append(p)
         
     # def checkKing():
         # if king is in danger
