@@ -10,7 +10,6 @@ p2 = Player('Player 2')
 board = Board()
 
 turn_order = []
-running = True
 winner = ''
 
 # Ask first player for piece color
@@ -56,31 +55,44 @@ else:
 
 # GAME
 pygame.init()
+pygame.font.init()
 pygame.display.set_caption('Chess')
 icon = pygame.image.load('Sprites/king_black.png')
 pygame.display.set_icon(icon)
 size = 650, 650
 black = 0, 0, 0
 screen = pygame.display.set_mode(size)
-first = 65
-x = first
-y = first
+text_player = pygame.image.load('Sprites/text_player.png')
+text_p1 = pygame.image.load('Sprites/one.png')
+text_p2 = pygame.image.load('Sprites/two.png')
 
-# Draw board
+padding = (5, 5)
+white = (255, 255, 255)
+black = (0, 0, 0)
+font = pygame.font.Font('freesansbold.ttf', 20)
+text = font.render(f'Player: 1 ({p1.get_piece_color().title()})', True, white, black)
+screen.blit(text, padding)
+pygame.display.update()
+
+
+padding = 65
+x = padding
+y = padding
+
+# Draw the board
 for row in board.board:
     for n in row:
         square = n['color'].convert()
         screen.blit(square, (x, y))
         x += 65
     y += 65
-    x = first
-
+    x = padding
 pygame.display.update()
 
-# Draw the pieces
-x = first
-y = first
+x = padding
+y = padding
 
+# Draw the pieces
 for row in board.board:
     for p in row:
         if p['piece'] != 0:
@@ -88,8 +100,10 @@ for row in board.board:
             screen.blit(piece, (x, y))
         x += 65
     y += 65
-    x = first
+    x = padding
 pygame.display.update()
+
+running = True
 
 # Game Loop
 while running:
