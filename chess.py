@@ -59,12 +59,9 @@ pygame.display.set_caption('Chess')
 icon = pygame.image.load('Sprites/king_black.png')
 pygame.display.set_icon(icon)
 size = 650, 650
-black = 0, 0, 0
 screen = pygame.display.set_mode(size)
-text_player = pygame.image.load('Sprites/text_player.png')
-text_p1 = pygame.image.load('Sprites/one.png')
-text_p2 = pygame.image.load('Sprites/two.png')
 
+# Text
 white = (255, 255, 255)
 black = (0, 0, 0)
 font = pygame.font.Font('freesansbold.ttf', 20)
@@ -81,10 +78,11 @@ else:
 text_total_turns = font.render(f'Total turns: {total_turns}', True, white, black)
 
 offset = 10
+
+# Display text
 screen.blit(text_turn, (offset, offset))
 screen.blit(text_total_turns, (475, offset))
 pygame.display.update()
-
 
 padding = 65
 x = padding
