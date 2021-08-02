@@ -33,17 +33,23 @@ class Board:
 
                 for y in range(0, self.cols):
                     self.board[x][y]['piece'] = black.pieces[middle_piece]
+                    self.board[x][y]['piece']['piece'].set_position(x, y)
+                    self.board[x][y]['piece']['piece'].set_color(black.get_piece_color())
                     middle_piece += 1
             
             # Black pieces - Front row
             if x == 1:
                 for y in range(0, self.cols):
                     self.board[x][y]['piece'] = black.pieces[y]
+                    self.board[x][y]['piece']['piece'].set_position(x, y)
+                    self.board[x][y]['piece']['piece'].set_color(black.get_piece_color())
             
             # White pieces - Front row
             if x == 6:
                 for y in range(0, self.cols):
                     self.board[x][y]['piece'] = white.pieces[y]
+                    self.board[x][y]['piece']['piece'].set_position(x, y)
+                    self.board[x][y]['piece']['piece'].set_color(white.get_piece_color())
 
             # White pieces - Back row
             if x == 7:
@@ -51,33 +57,6 @@ class Board:
 
                 for y in range(0, self.cols):
                     self.board[x][y]['piece'] = white.pieces[middle_piece]
+                    self.board[x][y]['piece']['piece'].set_position(x, y)
+                    self.board[x][y]['piece']['piece'].set_color(white.get_piece_color())
                     middle_piece += 1
-
-
-    def display(self):
-        """Print out the current state of the board"""
-        counter = self.cols
-        letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-
-        for row in self.board:
-            print(f"{counter} | ", end='')
-            counter -= 1
-
-            for piece in row:
-                if piece == 0:
-                    print(f" {piece} ", end='')
-                else:
-                    print(f" {piece.display} ", end='')
-            print()
-        
-        # Print line of hyphens
-        print("  ", end='')
-        for x in range(0, len(letters) * 4 - 6):
-            print("-", end='')
-        print()
-        print("    ", end='')
-
-        # Print list of letters
-        for letter in letters:
-            print(f" {letter} ", end='')
-        print()
