@@ -46,7 +46,7 @@ class Player:
             self.pieces.append({'piece': Pawn(), 'img': pygame.image.load(f'Sprites/pawn_{color}.png')})
         
         otherPieces = [
-            {'piece': Rook(), 'img': pygame.image.load(f'Sprites/rook_{color}.png')},
+            {'piece': Rook(), 'img': pygame.image.load(f'Sprites/rook_{color}.png'),},
             {'piece': Knight(), 'img': pygame.image.load(f'Sprites/knight_{color}.png')},
             {'piece': Bishop(), 'img': pygame.image.load(f'Sprites/bishop_{color}.png')},
             {'piece': Queen(), 'img': pygame.image.load(f'Sprites/queen_{color}.png')}, 
@@ -61,3 +61,6 @@ class Player:
     # def checkKing():
         # if king is in danger
         # if king is no longer in play then game over
+    # def available_locations(self, board):
+    #     for row in board:
+    #         for p in row:
