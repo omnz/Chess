@@ -128,3 +128,5 @@ pygame.quit()
 #     for player in turn_order:
 #         while True:
 #             piece_to_move = input("Enter coordinates of piece you wish to move: ")
+# print(p1.pieces[0]['piece'].get_position())
+print(p1.pieces[0]['piece'].check_position(board, (7, 0)))
