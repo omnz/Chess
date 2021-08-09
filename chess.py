@@ -1,3 +1,4 @@
+from Pieces.empty import Empty
 import pygame
 from pygame.constants import KEYDOWN, QUIT
 from board import Board
@@ -77,50 +78,49 @@ else:
 
 text_total_turns = font.render(f'Total turns: {total_turns}', True, white, black)
 
-offset = 10
-
-# Display text
-screen.blit(text_turn, (offset, offset))
-screen.blit(text_total_turns, (475, offset))
-pygame.display.update()
-
-padding = 65
-x = padding
-y = padding + offset
-
-# Draw the board
-for row in board.board:
-    for n in row:
-        square = n['color'].convert()
-        screen.blit(square, (x, y))
-        x += 65
-    y += 65
-    x = padding
-pygame.display.update()
-
-x = padding
-y = padding + offset
-
-# Draw the pieces
-for row in board.board:
-    for p in row:
-        if p['piece'] != 0:
-            piece = p['piece']['img'].convert_alpha()
-            screen.blit(piece, (x, y))
-        x += 65
-    y += 65
-    x = padding
-pygame.display.update()
+# board.draw(screen, text_turn, text_total_turns)
+board.draw_pieces(screen, text_turn, text_total_turns)
 
 running = True
+last_clicked = None
+temp_clicked = None
+possible_pos = []
 
 # Game Loop
 while running:
     for event in pygame.event.get():
-        if event.type in (QUIT, KEYDOWN):
+        if event.type == pygame.QUIT:
             running = False
     
-    # W.I.P.: Turns
+        # W.I.P.: Turns
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and running:
+            clicked_pos = pygame.mouse.get_pos()
+            for row in board.board:
+                for p in row:
+                    # No piece has been selected
+                    if last_clicked == None:
+                        if p['rect_pos'].collidepoint(clicked_pos) and p['piece']['piece'].can_move:
+                            last_clicked = p['piece']
+                            possible_pos = last_clicked['piece'].check_position(board)
+
+                    # Piece has been selected
+                    elif temp_clicked == None:
+                        if clicked_pos != p['rect_pos'].collidepoint(clicked_pos):
+                            if isinstance(p['piece'], Empty):
+                                if p['rect_pos'].collidepoint(clicked_pos):
+                                    temp_clicked = p
+
+                                # Clicked on possible position
+                                if temp_clicked in possible_pos:
+                                    board.move_piece(screen, last_clicked, temp_clicked)
+                                    temp_clicked = None
+                                    last_clicked = None
+                                    board.update(screen, text_turn, text_total_turns)
+
+                                # Clicked on non-possible position
+                                # else:
+
+  
     pygame.display.update()
 
 pygame.quit()
@@ -129,4 +129,4 @@ pygame.quit()
 #         while True:
 #             piece_to_move = input("Enter coordinates of piece you wish to move: ")
 # print(p1.pieces[0]['piece'].get_position())
-print(p1.pieces[0]['piece'].check_position(board, (7, 0)))
+# print(p1.pieces[0]['piece'].check_position(board, (5, 0)))
