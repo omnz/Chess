@@ -99,6 +99,8 @@ while running:
                 for p in row:
                     # No piece has been selected
                     if last_clicked == None:
+                        if p['rect_pos'].collidepoint(clicked_pos) and isinstance(p['piece'], Empty):
+                            break
                         if p['rect_pos'].collidepoint(clicked_pos) and p['piece']['piece'].can_move:
                             last_clicked = p['piece']
                             possible_pos = last_clicked['piece'].check_position(board)
@@ -118,7 +120,8 @@ while running:
                                     board.update(screen, text_turn, text_total_turns)
 
                                 # Clicked on non-possible position
-                                # else:
+                                else:
+                                    temp_clicked = None
 
   
     pygame.display.update()
