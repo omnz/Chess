@@ -123,16 +123,24 @@ class Board:
             
     # def eat_piece(self, turn, last_clicked, temp_clicked, p1, p2):
     
-    def draw_board(self, screen, text_turn, text_total_turns):
+    def draw_board(self, screen, p1, p2, text_details):
         """Draw the chess board"""
         offset = 10
         padding = 65
         x = padding + offset
         y = padding + offset * 3
 
+        # Display 1st turn
+        if p1.get_piece_color() == 'white':
+            text_details['text_turn'] = text_details['font'].render(f'Turn: {p1.get_name()} ({p1.get_piece_color().title()})', True, text_details['white'], text_details['black'])
+        else:
+            text_details['text_turn'] = text_details['font'].render(f'Turn: {p2.get_name()} ({p2.get_piece_color().title()})', True, text_details['white'], text_details['black'])
+
+        text_details['text_total_turns'] = text_details['font'].render(f"Total turns: {text_details['total_turns']}", True, text_details['white'], text_details['black'])
+
         # Display text
-        screen.blit(text_turn, (offset * 4, offset))
-        screen.blit(text_total_turns, (450, offset))
+        screen.blit(text_details['text_turn'], (offset * 4, offset))
+        screen.blit(text_details['text_total_turns'], (450, offset))
         pygame.display.update()
 
         # Draw the board
@@ -147,14 +155,14 @@ class Board:
             x = padding + offset
         pygame.display.update()
 
-    def draw_pieces(self, screen, text_turn, text_total_turns):
+    def draw_pieces(self, screen, p1, p2, text_details):
         """Draw the pieces in their initial positions"""
         offset = 10
         padding = 65
         x = padding + offset
         y = padding + offset * 3
 
-        self.draw_board(screen, text_turn, text_total_turns)
+        self.draw_board(screen, p1, p2, text_details)
         # Draw the pieces
         for row in self.board:
             for p in row:
@@ -168,9 +176,9 @@ class Board:
             x = padding + offset
         pygame.display.update()        
     
-    def update(self, screen, text_turn, text_total_turns):
+    def update(self, screen, p1, p2, text_details):
         """Update the board and pieces"""
-        self.draw_board(screen, text_turn, text_total_turns)
+        self.draw_board(screen, p1, p2, text_details)
 
         for row in self.board:
             for p in row:
@@ -180,7 +188,7 @@ class Board:
         
         pygame.display.update()
     
-    def check_piece_promotion(self, piece, p1, p2, screen, text_turn, text_total_turns, row, color):
+    def check_piece_promotion(self, piece, p1, p2, screen, text_details, row, color):
         """Check if any piece in row can be promoted"""
         col = 0
         for piece in self.board[row]:
@@ -190,5 +198,5 @@ class Board:
                         p1.promote_piece(self, piece, row, col)
                     elif p2.get_piece_color() == color and not isinstance(piece['piece']['piece'], Queen):
                         p2.promote_piece(self, piece, row, col)
-                    self.update(screen, text_turn, text_total_turns)
+                    self.update(screen, p1, p2, text_details)
             col += 1
