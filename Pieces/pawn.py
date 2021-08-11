@@ -15,23 +15,44 @@ class Pawn(Piece):
         
         possible_positions = []
 
-        for count in range(0, 2):
+        for count in range(0, 4):
             # Reset row and col
             row = self.get_position()[0]
             col = self.get_position()[1]
 
             # Check top
             if count == 0:
-                row = row - 1
+                if isinstance(board.board[row - 1][col]['piece'], Empty):
+                    row = row - 1
             # Check top x 2
             elif count == 1:
-                row = row - 2
-
+                if isinstance(board.board[row - 2][col]['piece'], Empty):
+                    row = row - 2
+            # Diagonal left
+            elif count == 2:
+                try:
+                    if not isinstance(board.board[row - 1][col - 1]['piece'], Empty):
+                        if board.board[row - 1][col - 1]['piece']['piece'].get_color() != self.get_color():
+                            row = row - 1
+                            col = col - 1
+                    else:
+                        continue
+                except:
+                    continue
+            # Diagonal right
+            elif count == 3:
+                try:
+                    if not isinstance(board.board[row - 1][col + 1]['piece'], Empty):
+                        if board.board[row - 1][col + 1]['piece']['piece'].get_color() != self.get_color():
+                            row = row - 1
+                            col = col + 1
+                    else:
+                        continue
+                except:
+                    continue
             try:
                 board_pos = board.board[row][col]
-
-                if isinstance(board_pos['piece'], Empty):
-                    possible_positions.append(board_pos)
+                possible_positions.append(board_pos)
             except:
                 continue
 
