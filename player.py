@@ -58,6 +58,33 @@ class Player:
         for p in otherPieces:
             self.pieces.append(p)
         
+        self.set_indexes()
+
+    def set_indexes(self):
+        count = 0
+        for piece in self.pieces:
+            piece['piece'].set_index(count)
+            count += 1
+
+    def print_pieces(self):
+        for piece in self.pieces:
+            print(piece)
+    
+    def promote_piece(self, board, piece, row, col):
+        index = piece['piece']['piece'].get_index()
+        # print(board.board[row][col])
+        self.pieces[index]['piece'] = Queen()
+        self.pieces[index]['piece'].set_color(self.get_piece_color())
+        self.pieces[index]['piece'].set_position(row, col)
+        self.pieces[index]['piece'].set_index(index)
+        self.pieces[index]['piece'].can_move = True
+        board.board[row][col]['piece']['img'] = pygame.image.load(f'Sprites/queen_{self.get_piece_color()}.png')
+        # self.pieces[index]['piece']['img'] = pygame.image.load(f'Sprites/queen_{self.get_piece_color()}.png')
+        
+        # print(board.board[row][col])
+        # board.board[row][col]['piece']['piece'] = self.pieces[index]['piece']
+
+        
     # def checkKing():
         # if king is in danger
         # if king is no longer in play then game over
