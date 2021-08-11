@@ -3,6 +3,7 @@ class Piece:
         self.can_move = False
         self.position = None
         self.color = None
+        self.index = None
     
     def flip_can_move(self):
         """Switch whether the piece can move or not"""
@@ -19,3 +20,9 @@ class Piece:
 
     def get_color(self):
         return self.color
+
+    def set_index(self, number):
+        self.index = number
+
+    def get_index(self):
+        return self.index
