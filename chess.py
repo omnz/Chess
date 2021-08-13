@@ -22,6 +22,7 @@ icon = pygame.image.load('Sprites/king_black.png')
 pygame.display.set_icon(icon)
 size = 650, 650
 screen = pygame.display.set_mode(size)
+surface = pygame.Surface(size, pygame.SRCALPHA)
 text_details = {
     'text_turn': '',
     'text_total_turns': '',
@@ -34,10 +35,9 @@ text_details = {
 board.draw_pieces(screen, p1, p2, text_details)
 
 running = True
-last_clicked = None
-temp_clicked = None
 possible_pos = []
 turn = turn_order[0]
+clicks = []
 
 # Game Loop
 while running:
@@ -47,50 +47,75 @@ while running:
     
         # W.I.P.: Turns
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and running:
-            clicked_pos = pygame.mouse.get_pos()
-            for row in board.board:
-                for p in row:
-                    # No piece has been selected
-                    if last_clicked == None:
-                        if p['rect_pos'].collidepoint(clicked_pos) and isinstance(p['piece'], Empty):
+            mouse_click = pygame.mouse.get_pos()
+                
+            if len(clicks) < 2:
+                for row in board.board:
+                    for p in row:
+                        clicked_square = p['rect_pos'].collidepoint(mouse_click)
+
+                        # If clicked square is empty
+                        if clicked_square and isinstance(p['piece'], Empty):
                             print('Empty')
-                            break
-                        if p['rect_pos'].collidepoint(clicked_pos) and p['piece']['piece'].can_move:
-                            last_clicked = p['piece']
-                            possible_pos = last_clicked['piece'].check_position(board)
-                            # print(possible_pos)
-                        if p['rect_pos'].collidepoint(clicked_pos):
-                            if not isinstance(p['piece'], Empty):
-                                print(f"{p['piece']['piece']}, can_move: {p['piece']['piece'].can_move}, color: {p['piece']['piece'].get_color()}")
+                            possible_pos = p['piece'].check_position(board)
+                            game.show_possible_moves(possible_pos, screen, surface)
+                            board.update(screen, p1, p2, text_details)
 
-                    # Piece has been selected
-                    elif temp_clicked == None:
-                        if clicked_pos != p['rect_pos'].collidepoint(clicked_pos):
-                            if p['rect_pos'].collidepoint(clicked_pos):
-                                temp_clicked = p
-
-                            # Clicked on possible position
-                            if temp_clicked in possible_pos:
-                                board.move_piece(turn, last_clicked, temp_clicked, p1, p2)
-                                board.update(screen, p1, p2, text_details)
-
-                                # Check if piece can be promoted
-                                board.check_piece_promotion(last_clicked, p1, p2, screen, text_details, 0, 'white')
-                                board.check_piece_promotion(last_clicked, p1, p2, screen, text_details, board.rows - 1, 'black')
-
-                                temp_clicked = None
-                                last_clicked = None
+                            # Check if a piece has already been selected
+                            if len(clicks) == 1:
+                                last_clicked = p
                                 
-                            # Clicked on non-possible position
-                            else:
-                                clicked_pos = pygame.mouse.get_pos()
+                                # Check if empty space is a plausible move
+                                if last_clicked in clicks[0]['possible_pos']:
+                                    clicks.append({'piece': last_clicked})
+                                else:
+                                    clicks.pop()
+                                break
 
-                                # Clicked on a piece
-                                if p['rect_pos'].collidepoint(clicked_pos) and not isinstance(p['piece'], Empty):
-                                    if p['piece']['piece'].can_move:
-                                        last_clicked = p['piece']
-                                        possible_pos = last_clicked['piece'].check_position(board)
-                                temp_clicked = None
+                        # If clicked square is NOT empty
+                        elif clicked_square and not isinstance(p['piece'], Empty):
+                            print(f"{p['piece']['piece']}, can_move: {p['piece']['piece'].can_move}, color: {p['piece']['piece'].get_color()}")
+
+                            # Select one of your pieces
+                            if p['piece']['piece'].can_move:
+                                last_clicked = p
+
+                                # Select first piece
+                                if len(clicks) == 0:
+                                    possible_pos = last_clicked['piece']['piece'].check_position(board)
+                                    board.update(screen, p1, p2, text_details)
+                                    game.show_possible_moves(possible_pos, screen, surface)
+                                    clicks.append({'piece': last_clicked, 'possible_pos': possible_pos})
+                                    break
+
+                                # Select a different/same piece
+                                else:
+                                    possible_pos = last_clicked['piece']['piece'].check_position(board)
+                                    board.update(screen, p1, p2, text_details)
+                                    game.show_possible_moves(possible_pos, screen, surface)
+                                    clicks.pop()
+                                    clicks.append({'piece': last_clicked, 'possible_pos': possible_pos})
+                                    break
+                            
+                            # Select enemy piece
+                            else:
+                                last_clicked = p
+                                if last_clicked in clicks[0]['possible_pos']:
+                                    clicks.append({'piece': last_clicked})
+                                    break
+                                else:
+                                    game.empty_list(clicks)
+
+            # Move piece
+            if len(clicks) == 2:
+                board.move_piece(turn, clicks[0]['piece'], clicks[1]['piece'], p1, p2)
+                board.update(screen, p1, p2, text_details)
+
+                # Check if piece can be promoted
+                board.check_piece_promotion(clicks[0], p1, p2, screen, text_details, 0, 'white')
+                board.check_piece_promotion(clicks[0], p1, p2, screen, text_details, board.rows - 1, 'black')
+
+                game.empty_list(clicks)                                
                                 
     pygame.display.update()
 
