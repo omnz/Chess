@@ -38,7 +38,7 @@ def setup(board, p1, p2, turn_order):
     else:
         p1.build_pieces('black')
         p2.build_pieces('white')
-        board.setup(p2, p1)
+        board.setup(p1, p2)
         p2.turn()
         
         turn_order.append(p2)
@@ -61,3 +61,14 @@ def show_possible_moves(possible_pos, screen, surface):
 def empty_list(clicks):
     while clicks:
         clicks.pop()
+
+def next_turn(current_player, turn_order, p1, p2):
+    p1.turn()
+    p2.turn()
+
+    if current_player == turn_order[0]:
+        current_player = turn_order[1]
+    else:
+        current_player = turn_order[0]
+
+    return current_player
