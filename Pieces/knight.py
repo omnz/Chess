@@ -28,6 +28,7 @@ class Knight(Piece):
                 row = row - 2
                 col = col - 1
             elif count == 2:
+                print(f"row: {row}, col: {col}")
                 row = row - 2
                 col = col + 1
             elif count == 3:
@@ -47,11 +48,12 @@ class Knight(Piece):
                 col = col - 2
 
             try:
-                board_pos = board.board[row][col]
+                if row >= 0:
+                    board_pos = board.board[row][col]
 
-                # Check if new position is empty or held by enemy
-                if isinstance(board_pos['piece'], Empty) or board_pos['piece']['piece'].get_color() != self.get_color():
-                    possible_positions.append(board_pos)
+                    # Check if new position is empty or held by enemy
+                    if isinstance(board_pos['piece'], Empty) or board_pos['piece']['piece'].get_color() != self.get_color():
+                        possible_positions.append(board_pos)
             except:
                 continue
 
