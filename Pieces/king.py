@@ -1,5 +1,6 @@
 from Pieces.piece import Piece
 from Pieces.empty import Empty
+from Pieces.rook import Rook
 
 
 class King(Piece):
@@ -9,6 +10,7 @@ class King(Piece):
         """Initialize piece attributes"""
         super().__init__()
         self.display = 'K'
+        self.has_moved = False
     
     def check_position(self, board):
         """Returns '1' if position is valid."""
@@ -39,9 +41,31 @@ class King(Piece):
             try:
                 board_pos = board.board[row][col]
 
-                if isinstance(board_pos['piece'], Empty):
+                # Check if new position is empty or held by enemy
+                if isinstance(board_pos['piece'], Empty) or board_pos['piece']['piece'].get_color() != self.get_color():
                     possible_positions.append(board_pos)
             except:
                 continue
+
+        # King & Rook swap
+        if not self.has_moved:
+            row = self.get_position()[0]
+            col = self.get_position()[1]
+            board_pos = board.board[row]
+
+            # Right
+            if isinstance(board_pos[col + 1]['piece'], Empty) and isinstance(board_pos[col + 2]['piece'], Empty):
+                if isinstance(board_pos[col + 3]['piece']['piece'], Rook) and board_pos[col + 3]['piece']['piece'].has_moved == False:
+                    col = col + 2
+                    board_pos = board.board[row][col]
+                    possible_positions.append(board_pos)
+
+            # Left
+            board_pos = board.board[row]
+            if isinstance(board_pos[col - 1]['piece'], Empty) and isinstance(board_pos[col - 2]['piece'], Empty) and isinstance(board_pos[col - 3]['piece'], Empty):
+                if isinstance(board_pos[col - 4]['piece']['piece'], Rook) and board_pos[col - 4]['piece']['piece'].has_moved == False:
+                    col = col - 2
+                    board_pos = board.board[row][col]
+                    possible_positions.append(board_pos)
 
         return possible_positions
