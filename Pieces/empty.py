@@ -10,4 +10,9 @@ class Empty(Piece):
         self.display = 'Empty'
         self.set_color(None)
 
-    # def move():
+    def check_position(self, board):
+        """Returns '1' if position is valid."""
+        
+        possible_positions = []
+        
+        return possible_positions
