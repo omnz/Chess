@@ -91,16 +91,16 @@ class Board:
         if isinstance(last_clicked['piece'], Pawn) or isinstance(last_clicked['piece'], Rook):
             last_clicked['piece'].has_moved = True
         
-        if isinstance(last_clicked['piece'], King) and not last_clicked['piece'].has_moved:
+        elif isinstance(last_clicked['piece'], King) and not last_clicked['piece'].has_moved:
             if isinstance(new_click['piece'], Empty):
                 # Move right
                 if new_click['piece'].get_position() == (last_position_x, last_position_y + 2):
-                    last_clicked['piece'].has_moved = True
                     self.move_piece(player, self.board[last_position_x][last_position_y + 3]['piece'], self.board[last_position_x][last_position_y + 1], p1, p2)
                 # Move left
-                if new_click['piece'].get_position() == (last_position_x, last_position_y - 2):
-                    last_clicked['piece'].has_moved = True
+                elif new_click['piece'].get_position() == (last_position_x, last_position_y - 2):
                     self.move_piece(player, self.board[last_position_x][last_position_y - 4]['piece'], self.board[last_position_x][last_position_y - 1], p1, p2)
+                
+                last_clicked['piece'].has_moved = True
                     
 
         if isinstance(new_click['piece'], Empty):
@@ -133,23 +133,21 @@ class Board:
 
             # Remove from player's pieces list
             if player.get_name() == 'Player 1':
-                p2.print_piece_index()
-                print(scrapped_piece['piece'].get_index())
+                # p2.print_piece_index()
+                # print(scrapped_piece['piece'].get_index())
                 p2.pieces.pop(scrapped_piece['piece'].get_index())
-                p2.print_piece_index()
+                # p2.print_piece_index()
                 p2.set_indexes()
-                p2.print_piece_index()
+                # p2.print_piece_index()
             else:
                 p1.pieces.pop(scrapped_piece['piece'].get_index())
-                p2.set_indexes()
+                p1.set_indexes()
             
             # Remove piece from board
             self.board[last_position_x][last_position_y]['piece'] = Empty()
             self.board[last_position_x][last_position_y]['piece'].set_position(last_position_x, last_position_y)
-            
-    # def eat_piece(self, turn, last_clicked, temp_clicked, p1, p2):
     
-    def draw_board(self, screen, p1, p2, text_details):
+    def draw_board(self, screen, current_player, text_details):
         """Draw the chess board"""
         offset = 10
         padding = 60
@@ -157,10 +155,10 @@ class Board:
         y = padding + offset * 3
 
         # Display 1st turn
-        if p1.get_piece_color() == 'white':
-            text_details['text_turn'] = text_details['font'].render(f'Turn: {p1.get_name()} ({p1.get_piece_color().title()})', True, text_details['white'], text_details['black'])
-        else:
-            text_details['text_turn'] = text_details['font'].render(f'Turn: {p2.get_name()} ({p2.get_piece_color().title()})', True, text_details['white'], text_details['black'])
+        # if p1.get_piece_color() == 'white':
+        text_details['text_turn'] = text_details['font'].render(f'Turn: {current_player.get_name()} ({current_player.get_piece_color().title()})', True, text_details['white'], text_details['black'])
+        # else:
+        #     text_details['text_turn'] = text_details['font'].render(f'Turn: {p2.get_name()} ({p2.get_piece_color().title()})', True, text_details['white'], text_details['black'])
 
         text_details['text_total_turns'] = text_details['font'].render(f"Total turns: {text_details['total_turns']}", True, text_details['white'], text_details['black'])
 
@@ -182,14 +180,14 @@ class Board:
             x = padding + offset * 2
         pygame.display.update()
 
-    def draw_pieces(self, screen, p1, p2, text_details):
+    def draw_pieces(self, screen, current_player, text_details):
         """Draw the pieces in their initial positions"""
         offset = 10
         padding = 60
         x = padding + offset * 2
         y = padding + offset * 3
 
-        self.draw_board(screen, p1, p2, text_details)
+        self.draw_board(screen, current_player, text_details)
         # Draw the pieces
         for row in self.board:
             for p in row:
@@ -203,9 +201,9 @@ class Board:
             x = padding + offset * 2
         pygame.display.update()        
     
-    def update(self, screen, p1, p2, text_details):
+    def update(self, screen, current_player, text_details):
         """Update the board and pieces"""
-        self.draw_board(screen, p1, p2, text_details)
+        self.draw_board(screen, current_player, text_details)
 
         for row in self.board:
             for p in row:
@@ -215,16 +213,50 @@ class Board:
         
         pygame.display.update()
     
-    def check_piece_promotion(self, piece, p1, p2, screen, text_details, row, color):
+    def check_piece_promotion(self, piece, current_player, screen, text_details, row, p1):
         """Check if any piece in row can be promoted"""
-        col = 0
-        for piece in self.board[row]:
-            if not isinstance(piece['piece'], Empty):
-                if isinstance(piece['piece']['piece'], Pawn):
-                    if piece['piece']['piece'].get_color() == color:
-                        if p1.get_piece_color() == color and not isinstance(piece['piece']['piece'], Queen):
-                            p1.promote_piece(self, piece, row, col)
-                        elif p2.get_piece_color() == color and not isinstance(piece['piece']['piece'], Queen):
-                            p2.promote_piece(self, piece, row, col)
-                        self.update(screen, p1, p2, text_details)
-            col += 1
+
+        if isinstance(piece['piece']['piece'], Pawn):
+            row = piece['piece']['piece'].get_position()[0]
+            col = piece['piece']['piece'].get_position()[1]
+            print(current_player)
+            print(p1)
+
+            if current_player.get_piece_color() == 'white':
+                # Player 1 is white
+                if current_player == p1:
+                    if row == 0:
+                        current_player.promote_piece(self, piece, row, col)
+                        self.update(screen, current_player, text_details)
+                # Player 2 is white
+                else:
+                    print(f"Row: {row}")
+                    if row == self.rows - 1:
+                        print(f"Row: {row}")
+                        current_player.promote_piece(self, piece, row, col)
+                        self.update(screen, current_player, text_details)
+            else:
+                # Player 1 is black
+                if current_player == p1:
+                    if row == 0:
+                        current_player.promote_piece(self, piece, row, col)
+                        self.update(screen, current_player, text_details)
+                # Player 2 is black
+                else:
+                    if row == self.rows - 1:
+                        current_player.promote_piece(self, piece, row, col)
+                        self.update(screen, current_player, text_details)
+                    
+            
+
+        # col = 0
+        # for piece in self.board[row]:
+        #     if not isinstance(piece['piece'], Empty):
+        #         if isinstance(piece['piece']['piece'], Pawn):
+        #             if piece['piece']['piece'].get_color() == color:
+        #                 if p1.get_piece_color() == color:
+        #                     p1.promote_piece(self, piece, row, col)
+        #                 elif p2.get_piece_color() == color:
+        #                     p2.promote_piece(self, piece, row, col)
+        #                 self.update(screen, p1, p2, text_details)
+        #     col += 1
