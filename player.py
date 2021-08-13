@@ -34,9 +34,9 @@ class Player:
         """Switch is_turn and player's pieces' can_move to True/False"""
         self.is_turn = not self.is_turn
         
-        # Switch pieces to be able to move/not move
-        for piece in self.pieces:
-            piece['piece'].flip_can_move()
+        # # Switch pieces to be able to move/not move
+        # for piece in self.pieces:
+        #     piece['piece'].flip_can_move()
 
     def build_pieces(self, color):
         """Build list of all pieces"""
