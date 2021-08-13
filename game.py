@@ -1,3 +1,6 @@
+from Pieces.empty import Empty
+import pygame
+
 def get_player_colors(p1, p2):
     """Ask player 1 for choice of piece color"""
     while True:
@@ -40,3 +43,21 @@ def setup(board, p1, p2, turn_order):
         
         turn_order.append(p2)
         turn_order.append(p1)
+
+def show_possible_moves(possible_pos, screen, surface):
+    surface.fill((0, 0, 0, 0))
+    for p in possible_pos:
+        # print(p)
+        surface.fill((0, 0, 0, 0))
+        x = p['rect_pos'][0]
+        y = p['rect_pos'][1]
+
+        if isinstance(p['piece'], Empty):
+            circle = pygame.draw.rect(surface, (102, 66, 41, 255), (x, y, 64, 64))
+        else:
+            circle = pygame.draw.rect(surface, (141, 49, 35, 180), (x, y, 64, 64))
+        screen.blit(surface, (0, 0))
+
+def empty_list(clicks):
+    while clicks:
+        clicks.pop()
