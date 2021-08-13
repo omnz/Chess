@@ -9,6 +9,7 @@ class Rook(Piece):
         """Initialize piece attributes"""
         super().__init__()
         self.display = 'R'
+        self.has_moved = False
     
     def check_position(self, board):
         """Returns '1' if position is valid."""
@@ -28,8 +29,13 @@ class Rook(Piece):
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
@@ -41,8 +47,13 @@ class Rook(Piece):
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
@@ -54,8 +65,13 @@ class Rook(Piece):
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
@@ -67,8 +83,13 @@ class Rook(Piece):
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
