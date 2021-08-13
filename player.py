@@ -13,8 +13,6 @@ class Player:
         self.pieces = []
         self.is_turn = False
         self.piece_color = None
-        
-        # self.build_pieces()
     
     def set_name(self, name):
         """Set the player's name"""
@@ -42,9 +40,9 @@ class Player:
 
     def build_pieces(self, color):
         """Build list of all pieces"""
-        for p in range(0, 8):
+        for n in range(0, 8):
             self.pieces.append({'piece': Pawn(), 'img': pygame.image.load(f'Sprites/pawn_{color}.png')})
-        
+
         otherPieces = [
             {'piece': Rook(), 'img': pygame.image.load(f'Sprites/rook_{color}.png'),},
             {'piece': Knight(), 'img': pygame.image.load(f'Sprites/knight_{color}.png')},
@@ -57,37 +55,33 @@ class Player:
 
         for p in otherPieces:
             self.pieces.append(p)
-        
+
         self.set_indexes()
 
     def set_indexes(self):
+        """Set indexes for place in 'pieces' list"""
         count = 0
         for piece in self.pieces:
             piece['piece'].set_index(count)
             count += 1
 
     def print_pieces(self):
+        """Print all of the player's pieces"""
         for piece in self.pieces:
             print(piece)
     
     def promote_piece(self, board, piece, row, col):
+        """Promote piece to Queen"""
         index = piece['piece']['piece'].get_index()
-        # print(board.board[row][col])
         self.pieces[index]['piece'] = Queen()
         self.pieces[index]['piece'].set_color(self.get_piece_color())
         self.pieces[index]['piece'].set_position(row, col)
         self.pieces[index]['piece'].set_index(index)
         self.pieces[index]['piece'].can_move = True
         board.board[row][col]['piece']['img'] = pygame.image.load(f'Sprites/queen_{self.get_piece_color()}.png')
-        # self.pieces[index]['piece']['img'] = pygame.image.load(f'Sprites/queen_{self.get_piece_color()}.png')
         
-        # print(board.board[row][col])
-        # board.board[row][col]['piece']['piece'] = self.pieces[index]['piece']
-
-        
-    # def checkKing():
-        # if king is in danger
-        # if king is no longer in play then game over
-    # def available_locations(self, board):
-    #     for row in board:
-    #         for p in row:
+    def print_piece_index(self):
+        """Print all of a players pieces with their corresponding index"""
+        for p in self.pieces:
+            print(f"{p['piece']}, {p['piece'].get_index()}")
+        print()
