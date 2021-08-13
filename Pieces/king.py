@@ -17,7 +17,7 @@ class King(Piece):
         
         possible_positions = []
 
-        for count in range(0, 4):
+        for count in range(0, 8):
             # Reset row and col
             row = self.get_position()[0]
             col = self.get_position()[1]
@@ -38,12 +38,33 @@ class King(Piece):
             elif count == 3:
                 row = row + 1
 
-            try:
-                board_pos = board.board[row][col]
+            # Check top-left
+            elif count == 4:
+                row = row - 1
+                col = col - 1
 
-                # Check if new position is empty or held by enemy
-                if isinstance(board_pos['piece'], Empty) or board_pos['piece']['piece'].get_color() != self.get_color():
-                    possible_positions.append(board_pos)
+            # Check top-right
+            elif count == 5:
+                row = row - 1
+                col = col + 1
+
+            # Check bottom-left
+            elif count == 6:
+                row = row + 1
+                col = col - 1
+
+            # Check bottom-right
+            elif count == 7:
+                row = row + 1
+                col = col + 1
+
+            try:
+                if row >= 0:
+                    board_pos = board.board[row][col]
+
+                    # Check if new position is empty or held by enemy
+                    if isinstance(board_pos['piece'], Empty) or board_pos['piece']['piece'].get_color() != self.get_color():
+                        possible_positions.append(board_pos)
             except:
                 continue
 
