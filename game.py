@@ -45,9 +45,9 @@ def setup(board, p1, p2, turn_order):
         turn_order.append(p1)
 
 def show_possible_moves(possible_pos, screen, surface):
+    """Show all of a piece's possible moves"""
     surface.fill((0, 0, 0, 0))
     for p in possible_pos:
-        # print(p)
         surface.fill((0, 0, 0, 0))
         x = p['rect_pos'][0]
         y = p['rect_pos'][1]
@@ -59,10 +59,12 @@ def show_possible_moves(possible_pos, screen, surface):
         screen.blit(surface, (0, 0))
 
 def empty_list(clicks):
+    """Empty the given list"""
     while clicks:
         clicks.pop()
 
 def next_turn(current_player, turn_order, p1, p2):
+    """Flip current_player to next player"""
     p1.turn()
     p2.turn()
 
