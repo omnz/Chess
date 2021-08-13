@@ -32,14 +32,12 @@ text_details = {
     'total_turns': 0
 }
 
-board.draw_pieces(screen, p1, p2, text_details)
-
 running = True
 possible_pos = []
 current_player = turn_order[0]
 clicks = []
-# print(board.board[1][5]['piece']['piece'].can_move)
-print(current_player.get_piece_color(), current_player.is_turn)
+
+board.draw_pieces(screen, current_player, text_details)
 
 # Game Loop
 while running:
@@ -61,7 +59,7 @@ while running:
                             print('Empty')
                             possible_pos = p['piece'].check_position(board, current_player, p1)
                             game.show_possible_moves(possible_pos, screen, surface)
-                            board.update(screen, p1, p2, text_details)
+                            board.update(screen, current_player, text_details)
 
                             # Check if a piece has already been selected
                             if len(clicks) == 1:
@@ -83,12 +81,11 @@ while running:
                             if current_player.is_turn and p['piece']['piece'].get_color() == current_player.get_piece_color():
                             # if p['piece']['piece'].can_move:
                                 last_clicked = p
-                                print("Hello")
 
                                 # Select first piece
                                 if len(clicks) == 0:
                                     possible_pos = last_clicked['piece']['piece'].check_position(board, current_player, p1)
-                                    board.update(screen, p1, p2, text_details)
+                                    board.update(screen, current_player, text_details)
                                     game.show_possible_moves(possible_pos, screen, surface)
                                     clicks.append({'piece': last_clicked, 'possible_pos': possible_pos})
                                     break
@@ -96,7 +93,7 @@ while running:
                                 # Select a different/same piece
                                 else:
                                     possible_pos = last_clicked['piece']['piece'].check_position(board, current_player, p1)
-                                    board.update(screen, p1, p2, text_details)
+                                    board.update(screen, current_player, text_details)
                                     game.show_possible_moves(possible_pos, screen, surface)
                                     clicks.pop()
                                     clicks.append({'piece': last_clicked, 'possible_pos': possible_pos})
@@ -104,25 +101,27 @@ while running:
                             
                             # Select enemy piece
                             else:
-                                last_clicked = p
-                                if last_clicked in clicks[0]['possible_pos']:
-                                    clicks.append({'piece': last_clicked})
-                                    break
-                                else:
-                                    game.empty_list(clicks)
+                                if len(clicks) > 0:
+                                    last_clicked = p
+                                    if last_clicked in clicks[0]['possible_pos']:
+                                        clicks.append({'piece': last_clicked})
+                                        break
+                                    else:
+                                        game.empty_list(clicks)
 
             # Move piece
             if len(clicks) == 2:
                 board.move_piece(current_player, clicks[0]['piece'], clicks[1]['piece'], p1, p2)
-                board.update(screen, p1, p2, text_details)
+                board.update(screen, current_player, text_details)
 
                 # Check if piece can be promoted
-                board.check_piece_promotion(clicks[0], p1, p2, screen, text_details, 0, 'white')
-                board.check_piece_promotion(clicks[0], p1, p2, screen, text_details, board.rows - 1, 'black')
+                board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, 0, p1)
+                # board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, board.rows - 1)
 
                 game.empty_list(clicks)
                 current_player = game.next_turn(current_player, turn_order, p1, p2)
-                # print(current_player.get_piece_color(), current_player.is_turn)                       
+                text_details['total_turns'] += 1
+                board.update(screen, current_player, text_details)                      
                                 
     pygame.display.update()
 
