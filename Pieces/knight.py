@@ -49,7 +49,8 @@ class Knight(Piece):
             try:
                 board_pos = board.board[row][col]
 
-                if isinstance(board_pos['piece'], Empty):
+                # Check if new position is empty or held by enemy
+                if isinstance(board_pos['piece'], Empty) or board_pos['piece']['piece'].get_color() != self.get_color():
                     possible_positions.append(board_pos)
             except:
                 continue
