@@ -116,8 +116,8 @@ while running:
 
                 # Check if piece can be promoted
                 board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, 0, p1)
-                # board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, board.rows - 1)
 
+                # Get next player and update game
                 game.empty_list(clicks)
                 current_player = game.next_turn(current_player, turn_order, p1, p2)
                 text_details['total_turns'] += 1
