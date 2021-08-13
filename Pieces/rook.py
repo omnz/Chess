@@ -11,7 +11,7 @@ class Rook(Piece):
         self.display = 'R'
         self.has_moved = False
     
-    def check_position(self, board):
+    def check_position(self, board, player, p1):
         """Returns '1' if position is valid."""
         
         possible_positions = []
