@@ -42,11 +42,11 @@ class Pawn(Piece):
             elif count == 2:
                 try:
                     # Check if new position is NOT empty and is held by enemy
-                    if not isinstance(board.board[row - 1 * adjust][col - 1 * adjust]['piece'], Empty):
-                        print(board.board[row - 1 * adjust][col - 1 * adjust]['piece']['piece'].get_color())
-                        if board.board[row - 1 * adjust][col - 1 * adjust]['piece']['piece'].get_color() != self.get_color():
+                    if not isinstance(board.board[row - 1 * adjust][col - 1]['piece'], Empty):
+                        print(board.board[row - 1 * adjust][col - 1]['piece']['piece'].get_color())
+                        if board.board[row - 1 * adjust][col - 1]['piece']['piece'].get_color() != self.get_color():
                             row = row - 1 * adjust
-                            col = col - 1 * adjust
+                            col = col - 1
                     else:
                         continue
                 except:
@@ -55,11 +55,11 @@ class Pawn(Piece):
             elif count == 3:
                 try:
                     # Check if new position is NOT empty and is held by enemy
-                    if not isinstance(board.board[row - 1 * adjust][col + 1 * adjust]['piece'], Empty):
-                        print(board.board[row - 1 * adjust][col - 1 * adjust]['piece']['piece'].get_color())
-                        if board.board[row - 1 * adjust][col + 1 * adjust]['piece']['piece'].get_color() != self.get_color():
+                    if not isinstance(board.board[row - 1 * adjust][col + 1]['piece'], Empty):
+                        print(board.board[row - 1 * adjust][col - 1]['piece']['piece'].get_color())
+                        if board.board[row - 1 * adjust][col + 1]['piece']['piece'].get_color() != self.get_color():
                             row = row - 1 * adjust
-                            col = col + 1 * adjust
+                            col = col + 1
                     else:
                         continue
                 except:
