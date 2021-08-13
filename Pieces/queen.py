@@ -28,8 +28,13 @@ class Queen(Piece):
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
@@ -41,8 +46,13 @@ class Queen(Piece):
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
@@ -54,8 +64,13 @@ class Queen(Piece):
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
@@ -67,64 +82,89 @@ class Queen(Piece):
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
             # Check top-left
             elif count == 4:
-                while row > 0 or col > 0:
+                while row > 0 and col > 0:
                     row = row - 1
                     col = col - 1
                     
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
             # Check top-right
             elif count == 5:
-                while row > 0 or col < board.cols:
+                while row > 0 and col < board.cols:
                     row = row - 1
                     col = col + 1
 
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
             # Check bottom-right
             elif count == 6:
-                while row < board.rows or col < board.cols:
+                while row < board.rows and col < board.cols:
                     row = row + 1
                     col = col + 1
 
                     try:
                         board_pos = board.board[row][col]
 
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
             # Check bottom-left
             elif count == 7:
-                while row < board.rows or col > 0:
+                while row < board.rows and col > 0:
                     row = row + 1
                     col = col - 1
 
                     try:
                         board_pos = board.board[row][col]
-
+                        
+                        # Check if new position is empty or held by enemy
                         if isinstance(board_pos['piece'], Empty):
                             possible_positions.append(board_pos)
+                        else:
+                            if board_pos['piece']['piece'].get_color() != self.get_color():
+                                possible_positions.append(board_pos)
+                            break
                     except:
                         continue
 
