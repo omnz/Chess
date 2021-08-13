@@ -1,7 +1,10 @@
 import pygame
 from player import Player
-from Pieces.empty import Empty
+from Pieces.pawn import Pawn
+from Pieces.rook import Rook
+from Pieces.king import King
 from Pieces.queen import Queen
+from Pieces.empty import Empty
 import pygame
 
 class Board:
@@ -73,6 +76,7 @@ class Board:
     def move_piece(self, player, last_clicked, new_click, p1, p2):
         """Move a piece and update relevant information"""
 
+        last_clicked = last_clicked['piece']
         temp_pos = last_clicked['rect_pos']
         last_clicked['rect_pos'].update(new_click['rect_pos'])
         new_click['rect_pos'].update(temp_pos)
@@ -82,6 +86,22 @@ class Board:
         new_position_x = 0
         new_position_y = 0
         new_piece = None
+
+        # Check if pawn, rook, or king have moved
+        if isinstance(last_clicked['piece'], Pawn) or isinstance(last_clicked['piece'], Rook):
+            last_clicked['piece'].has_moved = True
+        
+        if isinstance(last_clicked['piece'], King) and not last_clicked['piece'].has_moved:
+            if isinstance(new_click['piece'], Empty):
+                # Move right
+                if new_click['piece'].get_position() == (last_position_x, last_position_y + 2):
+                    last_clicked['piece'].has_moved = True
+                    self.move_piece(player, self.board[last_position_x][last_position_y + 3]['piece'], self.board[last_position_x][last_position_y + 1], p1, p2)
+                # Move left
+                if new_click['piece'].get_position() == (last_position_x, last_position_y - 2):
+                    last_clicked['piece'].has_moved = True
+                    self.move_piece(player, self.board[last_position_x][last_position_y - 4]['piece'], self.board[last_position_x][last_position_y - 1], p1, p2)
+                    
 
         if isinstance(new_click['piece'], Empty):
             new_position_x = new_click['piece'].get_position()[0]
@@ -109,13 +129,19 @@ class Board:
 
         # Delete piece and replace with Empty
         if not isinstance(new_click['piece'], Empty):
-            scrapped_piece = self.board[new_position_x][new_position_y]['piece']
+            scrapped_piece = self.board[last_position_x][last_position_y]['piece']
 
             # Remove from player's pieces list
             if player.get_name() == 'Player 1':
+                p2.print_piece_index()
+                print(scrapped_piece['piece'].get_index())
                 p2.pieces.pop(scrapped_piece['piece'].get_index())
+                p2.print_piece_index()
+                p2.set_indexes()
+                p2.print_piece_index()
             else:
                 p1.pieces.pop(scrapped_piece['piece'].get_index())
+                p2.set_indexes()
             
             # Remove piece from board
             self.board[last_position_x][last_position_y]['piece'] = Empty()
@@ -126,8 +152,8 @@ class Board:
     def draw_board(self, screen, p1, p2, text_details):
         """Draw the chess board"""
         offset = 10
-        padding = 65
-        x = padding + offset
+        padding = 60
+        x = padding + offset * 2
         y = padding + offset * 3
 
         # Display 1st turn
@@ -139,7 +165,8 @@ class Board:
         text_details['text_total_turns'] = text_details['font'].render(f"Total turns: {text_details['total_turns']}", True, text_details['white'], text_details['black'])
 
         # Display text
-        screen.blit(text_details['text_turn'], (offset * 4, offset))
+        screen.fill((0, 0, 0))
+        screen.blit(text_details['text_turn'], (offset * 5, offset))
         screen.blit(text_details['text_total_turns'], (450, offset))
         pygame.display.update()
 
@@ -152,14 +179,14 @@ class Board:
                 screen.blit(square, n['rect_pos'])
                 x += 70
             y += 70
-            x = padding + offset
+            x = padding + offset * 2
         pygame.display.update()
 
     def draw_pieces(self, screen, p1, p2, text_details):
         """Draw the pieces in their initial positions"""
         offset = 10
-        padding = 65
-        x = padding + offset
+        padding = 60
+        x = padding + offset * 2
         y = padding + offset * 3
 
         self.draw_board(screen, p1, p2, text_details)
@@ -173,7 +200,7 @@ class Board:
                     screen.blit(piece, p['piece']['rect_pos'])
                 x += 70
             y += 70
-            x = padding + offset
+            x = padding + offset * 2
         pygame.display.update()        
     
     def update(self, screen, p1, p2, text_details):
@@ -193,10 +220,11 @@ class Board:
         col = 0
         for piece in self.board[row]:
             if not isinstance(piece['piece'], Empty):
-                if piece['piece']['piece'].get_color() == color:
-                    if p1.get_piece_color() == color and not isinstance(piece['piece']['piece'], Queen):
-                        p1.promote_piece(self, piece, row, col)
-                    elif p2.get_piece_color() == color and not isinstance(piece['piece']['piece'], Queen):
-                        p2.promote_piece(self, piece, row, col)
-                    self.update(screen, p1, p2, text_details)
+                if isinstance(piece['piece']['piece'], Pawn):
+                    if piece['piece']['piece'].get_color() == color:
+                        if p1.get_piece_color() == color and not isinstance(piece['piece']['piece'], Queen):
+                            p1.promote_piece(self, piece, row, col)
+                        elif p2.get_piece_color() == color and not isinstance(piece['piece']['piece'], Queen):
+                            p2.promote_piece(self, piece, row, col)
+                        self.update(screen, p1, p2, text_details)
             col += 1
