@@ -1,5 +1,6 @@
-from Pieces.empty import Empty
 import pygame
+from Pieces.empty import Empty
+from Pieces.pawn import Pawn
 
 def get_player_colors(p1, p2):
     """Ask player 1 for choice of piece color"""
@@ -44,7 +45,7 @@ def setup(board, p1, p2, turn_order):
         turn_order.append(p2)
         turn_order.append(p1)
 
-def show_possible_moves(possible_pos, screen, surface):
+def show_possible_moves(possible_pos, screen, surface, board, player, p1):
     """Show all of a piece's possible moves"""
     surface.fill((0, 0, 0, 0))
     for p in possible_pos:
@@ -53,9 +54,42 @@ def show_possible_moves(possible_pos, screen, surface):
         y = p['rect_pos'][1]
 
         if isinstance(p['piece'], Empty):
-            circle = pygame.draw.rect(surface, (102, 66, 41, 255), (x, y, 64, 64))
+            row = p['piece'].get_position()[0]
+            col = p['piece'].get_position()[1]
+
+            red = False
+            adjust = 0
+        
+            if player.get_piece_color() == p1.get_piece_color():
+                adjust = 1
+            else:
+                adjust = -1
+            
+            # Color: Red
+            try:
+                if not isinstance(board.board[row - 1 * adjust][col]['piece'], Empty):
+                    if isinstance(board.board[row - 1 * adjust][col]['piece']['piece'], Pawn):
+                        if board.board[row - 1 * adjust][col]['piece']['piece'].en_passant and board.board[row][col] in possible_pos:
+                            pygame.draw.rect(surface, (141, 49, 35, 180), (x, y, 64, 64))
+                            red = True
+            except:
+                pass
+            try:
+                if red == False:
+                    if not isinstance(board.board[row + 1 * adjust][col]['piece'], Empty):
+                        if isinstance(board.board[row + 1 * adjust][col]['piece']['piece'], Pawn):
+                            if board.board[row + 1 * adjust][col]['piece']['piece'].en_passant and board.board[row][col] in possible_pos:
+                                pygame.draw.rect(surface, (141, 49, 35, 180), (x, y, 64, 64))
+                                red = True
+            except:
+                pass
+
+            # Color: Brown
+            if red == False:
+                pygame.draw.rect(surface, (102, 66, 41, 255), (x, y, 64, 64))
         else:
-            circle = pygame.draw.rect(surface, (141, 49, 35, 180), (x, y, 64, 64))
+            pygame.draw.rect(surface, (141, 49, 35, 180), (x, y, 64, 64))
+            
         screen.blit(surface, (0, 0))
 
 def empty_list(clicks):
@@ -74,3 +108,19 @@ def next_turn(current_player, turn_order, p1, p2):
         current_player = turn_order[0]
 
     return current_player
+
+def remove_en_passant(p1, p2):
+    """Remove en passant if move not utilized"""
+    for p in p1.pieces:
+        if isinstance(p['piece'], Pawn):
+            if p['piece'].en_passant and p['counter'] == 0:
+                p['counter'] += 1
+            elif p['piece'].en_passant and p['counter'] == 1:
+                p['piece'].not_en_passant()
+
+    for p in p2.pieces:
+        if isinstance(p['piece'], Pawn):
+            if p['piece'].en_passant and p['counter'] == 0:
+                p['counter'] += 1
+            elif p['piece'].en_passant and p['counter'] == 1:
+                p['piece'].not_en_passant()
