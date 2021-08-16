@@ -1,9 +1,10 @@
-from Pieces.empty import Empty
 import pygame
 import game
 from pygame.constants import KEYDOWN, QUIT
 from board import Board
 from player import Player
+from Pieces.empty import Empty
+from Pieces.pawn import Pawn
 
 
 # Create players and board
@@ -56,9 +57,9 @@ while running:
 
                         # If clicked square is empty
                         if clicked_square and isinstance(p['piece'], Empty):
-                            print('Empty')
+                            print(p['piece'])
                             possible_pos = p['piece'].check_position(board, current_player, p1)
-                            game.show_possible_moves(possible_pos, screen, surface)
+                            game.show_possible_moves(possible_pos, screen, surface, board, current_player, p1)
                             board.update(screen, current_player, text_details)
 
                             # Check if a piece has already been selected
@@ -69,13 +70,17 @@ while running:
                                 if last_clicked in clicks[0]['possible_pos']:
                                     clicks.append({'piece': last_clicked})
                                 else:
-                                    clicks.pop()
+                                    game.empty_list(clicks)
                                 break
 
                         # If clicked square is NOT empty
                         elif clicked_square and not isinstance(p['piece'], Empty):
                             # print(f"{p['piece']['piece']}, can_move: {p['piece']['piece'].can_move}, color: {p['piece']['piece'].get_color()}")
-                            print(f"{p['piece']['piece']}, color: {p['piece']['piece'].get_color()}")
+                            if isinstance(p['piece']['piece'], Pawn) and p['piece']['piece'].en_passant:
+                                print(f"{p['piece']['piece']}, color: {p['piece']['piece'].get_color()}, en_passant: {p['piece']['piece'].en_passant}")
+                                print(f"{p['piece']}")
+                            else:
+                                print(f"{p['piece']['piece']}, color: {p['piece']['piece'].get_color()}")
 
                             # Select one of your pieces
                             if current_player.is_turn and p['piece']['piece'].get_color() == current_player.get_piece_color():
@@ -86,7 +91,7 @@ while running:
                                 if len(clicks) == 0:
                                     possible_pos = last_clicked['piece']['piece'].check_position(board, current_player, p1)
                                     board.update(screen, current_player, text_details)
-                                    game.show_possible_moves(possible_pos, screen, surface)
+                                    game.show_possible_moves(possible_pos, screen, surface, board, current_player, p1)
                                     clicks.append({'piece': last_clicked, 'possible_pos': possible_pos})
                                     break
 
@@ -94,7 +99,7 @@ while running:
                                 else:
                                     possible_pos = last_clicked['piece']['piece'].check_position(board, current_player, p1)
                                     board.update(screen, current_player, text_details)
-                                    game.show_possible_moves(possible_pos, screen, surface)
+                                    game.show_possible_moves(possible_pos, screen, surface, board, current_player, p1)
                                     clicks.pop()
                                     clicks.append({'piece': last_clicked, 'possible_pos': possible_pos})
                                     break
@@ -113,9 +118,10 @@ while running:
             if len(clicks) == 2:
                 board.move_piece(current_player, clicks[0]['piece'], clicks[1]['piece'], p1, p2)
                 board.update(screen, current_player, text_details)
+                game.remove_en_passant(p1, p2)
 
                 # Check if piece can be promoted
-                board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, 0, p1)
+                board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, 0, p1)                
 
                 # Get next player and update game
                 game.empty_list(clicks)
