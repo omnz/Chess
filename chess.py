@@ -4,7 +4,6 @@ from pygame.constants import KEYDOWN, QUIT
 from board import Board
 from player import Player
 from Pieces.empty import Empty
-from Pieces.pawn import Pawn
 
 
 # Create players and board
@@ -75,12 +74,7 @@ while running:
 
                         # If clicked square is NOT empty
                         elif clicked_square and not isinstance(p['piece'], Empty):
-                            # print(f"{p['piece']['piece']}, can_move: {p['piece']['piece'].can_move}, color: {p['piece']['piece'].get_color()}")
-                            if isinstance(p['piece']['piece'], Pawn) and p['piece']['piece'].en_passant:
-                                print(f"{p['piece']['piece']}, color: {p['piece']['piece'].get_color()}, en_passant: {p['piece']['piece'].en_passant}")
-                                print(f"{p['piece']}")
-                            else:
-                                print(f"{p['piece']['piece']}, color: {p['piece']['piece'].get_color()}")
+                            print(f"{p['piece']['piece']}, color: {p['piece']['piece'].get_color()}")
 
                             # Select one of your pieces
                             if current_player.is_turn and p['piece']['piece'].get_color() == current_player.get_piece_color():
