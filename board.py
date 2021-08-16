@@ -85,11 +85,42 @@ class Board:
         last_position_y = last_clicked['piece'].get_position()[1]
         new_position_x = 0
         new_position_y = 0
-        new_piece = None
+        new_piece = None                    
+
+        # Get new_position x and y
+        if isinstance(new_click['piece'], Empty):
+            new_position_x = new_click['piece'].get_position()[0]
+            new_position_y = new_click['piece'].get_position()[1]
+            new_piece = new_click['piece']
+        else:
+            new_position_x = new_click['piece']['piece'].get_position()[0]
+            new_position_y = new_click['piece']['piece'].get_position()[1]
+            new_piece = new_click['piece']['piece']
 
         # Check if pawn, rook, or king have moved
-        if isinstance(last_clicked['piece'], Pawn) or isinstance(last_clicked['piece'], Rook):
+        if isinstance(last_clicked['piece'], Rook) and not last_clicked['piece'].has_moved:
             last_clicked['piece'].has_moved = True
+
+        elif isinstance(last_clicked['piece'], Pawn):
+            # Get adjust
+            adjust = 0
+        
+            if player.get_piece_color() == p1.get_piece_color():
+                adjust = 1
+            else:
+                adjust = -1
+            
+            if not last_clicked['piece'].has_moved:
+                last_clicked['piece'].has_moved = True
+                self.en_passant(last_clicked, new_click, last_position_x, last_position_y, adjust)
+
+            # En passant
+            elif isinstance(new_click['piece'], Empty):                
+                if last_position_y != new_position_y:
+                    if not isinstance(self.board[last_position_x][new_position_y]['piece'], Empty):
+                        if isinstance(self.board[last_position_x][new_position_y]['piece']['piece'], Pawn):
+                            if self.board[last_position_x][new_position_y]['piece']['piece'].en_passant:
+                                self.remove_piece(new_click, player, p1, p2, last_position_x, new_position_y)
         
         elif isinstance(last_clicked['piece'], King) and not last_clicked['piece'].has_moved:
             if isinstance(new_click['piece'], Empty):
@@ -101,19 +132,8 @@ class Board:
                     self.move_piece(player, self.board[last_position_x][last_position_y - 4]['piece'], self.board[last_position_x][last_position_y - 1], p1, p2)
                 
                 last_clicked['piece'].has_moved = True
-                    
-
-        if isinstance(new_click['piece'], Empty):
-            new_position_x = new_click['piece'].get_position()[0]
-            new_position_y = new_click['piece'].get_position()[1]
-            new_piece = new_click['piece']
-        else:
-            new_position_x = new_click['piece']['piece'].get_position()[0]
-            new_position_y = new_click['piece']['piece'].get_position()[1]
-            new_piece = new_click['piece']['piece']
         
         # Change position of object
-        # temp_pos = last_clicked['piece'].get_position()
         last_clicked['piece'].set_position(new_position_x, new_position_y)
         new_piece.set_position(last_position_x, last_position_y)
 
@@ -127,25 +147,10 @@ class Board:
         self.board[last_position_x][last_position_y] = self.board[new_position_x][new_position_y]
         self.board[new_position_x][new_position_y] = temp_pos
 
-        # Delete piece and replace with Empty
-        if not isinstance(new_click['piece'], Empty):
-            scrapped_piece = self.board[last_position_x][last_position_y]['piece']
-
-            # Remove from player's pieces list
-            if player.get_name() == 'Player 1':
-                # p2.print_piece_index()
-                # print(scrapped_piece['piece'].get_index())
-                p2.pieces.pop(scrapped_piece['piece'].get_index())
-                # p2.print_piece_index()
-                p2.set_indexes()
-                # p2.print_piece_index()
-            else:
-                p1.pieces.pop(scrapped_piece['piece'].get_index())
-                p1.set_indexes()
-            
-            # Remove piece from board
-            self.board[last_position_x][last_position_y]['piece'] = Empty()
-            self.board[last_position_x][last_position_y]['piece'].set_position(last_position_x, last_position_y)
+        self.remove_piece(new_click, player, p1, p2, last_position_x, last_position_y)
+        print("----------------------------------------")
+        print(self.board[last_position_x][last_position_y])
+        print(self.board[new_position_x][new_position_y])
     
     def draw_board(self, screen, current_player, text_details):
         """Draw the chess board"""
@@ -154,15 +159,10 @@ class Board:
         x = padding + offset * 2
         y = padding + offset * 3
 
-        # Display 1st turn
-        # if p1.get_piece_color() == 'white':
+        # Display text
         text_details['text_turn'] = text_details['font'].render(f'Turn: {current_player.get_name()} ({current_player.get_piece_color().title()})', True, text_details['white'], text_details['black'])
-        # else:
-        #     text_details['text_turn'] = text_details['font'].render(f'Turn: {p2.get_name()} ({p2.get_piece_color().title()})', True, text_details['white'], text_details['black'])
-
         text_details['text_total_turns'] = text_details['font'].render(f"Total turns: {text_details['total_turns']}", True, text_details['white'], text_details['black'])
 
-        # Display text
         screen.fill((0, 0, 0))
         screen.blit(text_details['text_turn'], (offset * 5, offset))
         screen.blit(text_details['text_total_turns'], (450, offset))
@@ -246,17 +246,46 @@ class Board:
                     if row == self.rows - 1:
                         current_player.promote_piece(self, piece, row, col)
                         self.update(screen, current_player, text_details)
-                    
-            
+    
+    def en_passant(self, last_clicked, new_click, last_position_x, last_position_y, adjust):
+        """Determine if move allows for 'en passant'"""
+        temp_position_x = last_position_x - 2 * adjust
 
-        # col = 0
-        # for piece in self.board[row]:
-        #     if not isinstance(piece['piece'], Empty):
-        #         if isinstance(piece['piece']['piece'], Pawn):
-        #             if piece['piece']['piece'].get_color() == color:
-        #                 if p1.get_piece_color() == color:
-        #                     p1.promote_piece(self, piece, row, col)
-        #                 elif p2.get_piece_color() == color:
-        #                     p2.promote_piece(self, piece, row, col)
-        #                 self.update(screen, p1, p2, text_details)
-        #     col += 1
+        if isinstance(new_click['piece'], Empty):
+            if new_click['piece'].get_position() == (temp_position_x, last_position_y):
+                try:
+                    if isinstance(self.board[temp_position_x][last_position_y + 1]['piece']['piece'], Pawn):
+                        print("En passant right")
+                        last_clicked['piece'].en_passant = True
+                        last_clicked['counter'] = 0
+                except:
+                    pass
+
+                try:
+                    if isinstance(self.board[temp_position_x][last_position_y - 1]['piece']['piece'], Pawn):
+                        print("En passant left")
+                        last_clicked['piece'].en_passant = True
+                        last_clicked['counter'] = 0
+                except:
+                    pass
+
+    def remove_piece(self, new_click, player, p1, p2, position_x, position_y):
+        """Delete piece and replace with Empty"""
+
+        if not isinstance(new_click['piece'], Empty):
+            scrapped_piece = self.board[position_x][position_y]['piece']
+
+            # Remove from player's pieces list
+            if player.get_name() == 'Player 1':
+                p2.pieces.pop(scrapped_piece['piece'].get_index())
+                p2.set_indexes()
+            else:
+                p1.pieces.pop(scrapped_piece['piece'].get_index())
+                p1.set_indexes()
+            
+            # Remove piece from board
+            self.board[position_x][position_y]['piece'] = Empty()
+            self.board[position_x][position_y]['piece'].set_position(position_x, position_y)
+        else:
+            # Remove piece from board
+            self.board[position_x][position_y]['piece'] = Empty()
