@@ -35,7 +35,7 @@ class Pawn(Piece):
             # Check top x 2
             elif count == 1:
                 if self.has_moved == False:
-                    if isinstance(board.board[row - 2 * adjust][col]['piece'], Empty):
+                    if isinstance(board.board[row - 2 * adjust][col]['piece'], Empty) and isinstance(board.board[row - 1 * adjust][col]['piece'], Empty):
                         row = row - 2 * adjust
                 else:
                     continue
@@ -54,7 +54,7 @@ class Pawn(Piece):
             elif count == 3:
                 try:
                     # Check if new position is empty and is en passant
-                    if isinstance(board.board[row - 1 * adjust][col - 1]['piece'], Empty):
+                    if isinstance(board.board[row - 1 * adjust][col - 1 * adjust]['piece'], Empty):
                         if board.board[row][col - 1  * adjust]['piece']['piece'].en_passant:
                             row = row - 1 * adjust
                             col = col - 1 * adjust
@@ -77,7 +77,7 @@ class Pawn(Piece):
             elif count == 5:
                 try:
                     # Check if new position is empty and is en passant
-                    if isinstance(board.board[row - 1 * adjust][col + 1]['piece'], Empty):
+                    if isinstance(board.board[row - 1 * adjust][col + 1 * adjust]['piece'], Empty):
                         if board.board[row][col + 1 * adjust]['piece']['piece'].en_passant:
                             row = row - 1 * adjust
                             col = col + 1 * adjust
