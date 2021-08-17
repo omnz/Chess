@@ -119,17 +119,17 @@ class Board:
                 if last_position_y != new_position_y:
                     if not isinstance(self.board[last_position_x][new_position_y]['piece'], Empty):
                         if isinstance(self.board[last_position_x][new_position_y]['piece']['piece'], Pawn):
-                            if self.board[last_position_x][new_position_y]['piece']['piece'].en_passant:
-                                self.remove_piece(new_click, player, p1, p2, last_position_x, new_position_y)
+                                if self.board[last_position_x][new_position_y]['piece']['piece'].en_passant:
+                                    self.remove_piece(new_click, player, p1, p2, last_position_x, new_position_y)
         
         elif isinstance(last_clicked['piece'], King) and not last_clicked['piece'].has_moved:
             if isinstance(new_click['piece'], Empty):
                 # Move right
                 if new_click['piece'].get_position() == (last_position_x, last_position_y + 2):
-                    self.move_piece(player, self.board[last_position_x][last_position_y + 3]['piece'], self.board[last_position_x][last_position_y + 1], p1, p2)
+                    self.move_piece(player, self.board[last_position_x][last_position_y + 3], self.board[last_position_x][last_position_y + 1], p1, p2)
                 # Move left
                 elif new_click['piece'].get_position() == (last_position_x, last_position_y - 2):
-                    self.move_piece(player, self.board[last_position_x][last_position_y - 4]['piece'], self.board[last_position_x][last_position_y - 1], p1, p2)
+                    self.move_piece(player, self.board[last_position_x][last_position_y - 4], self.board[last_position_x][last_position_y - 1], p1, p2)
                 
                 last_clicked['piece'].has_moved = True
         
@@ -148,9 +148,6 @@ class Board:
         self.board[new_position_x][new_position_y] = temp_pos
 
         self.remove_piece(new_click, player, p1, p2, last_position_x, last_position_y)
-        print("----------------------------------------")
-        print(self.board[last_position_x][last_position_y])
-        print(self.board[new_position_x][new_position_y])
     
     def draw_board(self, screen, current_player, text_details):
         """Draw the chess board"""
@@ -255,17 +252,19 @@ class Board:
             if new_click['piece'].get_position() == (temp_position_x, last_position_y):
                 try:
                     if isinstance(self.board[temp_position_x][last_position_y + 1]['piece']['piece'], Pawn):
-                        print("En passant right")
-                        last_clicked['piece'].en_passant = True
-                        last_clicked['counter'] = 0
+                        if self.board[temp_position_x][last_position_y + 1]['piece']['piece'].get_color() != self.board[last_position_x][last_position_y]['piece']['piece'].get_color():
+                            print("En passant right")
+                            last_clicked['piece'].en_passant = True
+                            last_clicked['counter'] = 0
                 except:
                     pass
 
                 try:
                     if isinstance(self.board[temp_position_x][last_position_y - 1]['piece']['piece'], Pawn):
-                        print("En passant left")
-                        last_clicked['piece'].en_passant = True
-                        last_clicked['counter'] = 0
+                        if self.board[temp_position_x][last_position_y - 1]['piece']['piece'].get_color() != self.board[last_position_x][last_position_y]['piece']['piece'].get_color():
+                            print("En passant left")
+                            last_clicked['piece'].en_passant = True
+                            last_clicked['counter'] = 0
                 except:
                     pass
 
@@ -289,3 +288,4 @@ class Board:
         else:
             # Remove piece from board
             self.board[position_x][position_y]['piece'] = Empty()
+            self.board[position_x][position_y]['piece'].set_position(position_x, position_y)
