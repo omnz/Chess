@@ -1,10 +1,11 @@
+import pygame
+
 from Pieces.pawn import Pawn
 from Pieces.rook import Rook
 from Pieces.bishop import Bishop
 from Pieces.king import King
 from Pieces.knight import Knight
 from Pieces.queen import Queen
-import pygame
 
 class Player:
     def __init__(self, name):
