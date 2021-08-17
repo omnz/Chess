@@ -70,24 +70,27 @@ def show_possible_moves(possible_pos, screen, surface, board, player, p1):
                 if not isinstance(board.board[row - 1 * adjust][col]['piece'], Empty):
                     if isinstance(board.board[row - 1 * adjust][col]['piece']['piece'], Pawn):
                         if board.board[row - 1 * adjust][col]['piece']['piece'].en_passant and board.board[row][col] in possible_pos:
+                            print(p['piece'].get_position())
                             pygame.draw.rect(surface, (141, 49, 35, 180), (x, y, 64, 64))
                             red = True
             except:
                 pass
-            try:
-                if red == False:
+
+            if red == False:
+                try:
                     if not isinstance(board.board[row + 1 * adjust][col]['piece'], Empty):
                         if isinstance(board.board[row + 1 * adjust][col]['piece']['piece'], Pawn):
                             if board.board[row + 1 * adjust][col]['piece']['piece'].en_passant and board.board[row][col] in possible_pos:
                                 pygame.draw.rect(surface, (141, 49, 35, 180), (x, y, 64, 64))
                                 red = True
-            except:
-                pass
+                except:
+                    pass
 
             # Color: Brown
             if red == False:
                 pygame.draw.rect(surface, (102, 66, 41, 255), (x, y, 64, 64))
         else:
+            # Color: Red
             pygame.draw.rect(surface, (141, 49, 35, 180), (x, y, 64, 64))
             
         screen.blit(surface, (0, 0))
