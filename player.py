@@ -14,6 +14,7 @@ class Player:
         self.pieces = []
         self.is_turn = False
         self.piece_color = None
+        self.winner = False
     
     def set_name(self, name):
         """Set the player's name"""
@@ -86,3 +87,6 @@ class Player:
         for p in self.pieces:
             print(f"{p['piece']}, {p['piece'].get_index()}")
         print()
+
+    def set_winner(self):
+        self.winner = True
