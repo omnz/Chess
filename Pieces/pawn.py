@@ -88,10 +88,9 @@ class Pawn(Piece):
 
             # Try position on board
             try:
-                if row != 0 and col != -1:
-                    if row != self.get_position()[0] or col != self.get_position()[1]:
-                        board_pos = board.board[row][col]
-                        possible_positions.append(board_pos)
+                if row != self.get_position()[0] or col != self.get_position()[1]:
+                    board_pos = board.board[row][col]
+                    possible_positions.append(board_pos)
             except:
                 continue
 
