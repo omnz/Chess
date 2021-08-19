@@ -216,8 +216,6 @@ class Board:
         if isinstance(piece['piece']['piece'], Pawn):
             row = piece['piece']['piece'].get_position()[0]
             col = piece['piece']['piece'].get_position()[1]
-            print(current_player)
-            print(p1)
 
             if current_player.get_piece_color() == 'white':
                 # Player 1 is white
@@ -227,9 +225,7 @@ class Board:
                         self.update(screen, current_player, text_details)
                 # Player 2 is white
                 else:
-                    print(f"Row: {row}")
                     if row == self.rows - 1:
-                        print(f"Row: {row}")
                         current_player.promote_piece(self, piece, row, col)
                         self.update(screen, current_player, text_details)
             else:
@@ -253,7 +249,7 @@ class Board:
                 try:
                     if isinstance(self.board[temp_position_x][last_position_y + 1]['piece']['piece'], Pawn):
                         if self.board[temp_position_x][last_position_y + 1]['piece']['piece'].get_color() != self.board[last_position_x][last_position_y]['piece']['piece'].get_color():
-                            print("En passant right")
+                            # Pawn to right can 'en passant'
                             last_clicked['piece'].en_passant = True
                             last_clicked['counter'] = 0
                 except:
@@ -262,7 +258,7 @@ class Board:
                 try:
                     if isinstance(self.board[temp_position_x][last_position_y - 1]['piece']['piece'], Pawn):
                         if self.board[temp_position_x][last_position_y - 1]['piece']['piece'].get_color() != self.board[last_position_x][last_position_y]['piece']['piece'].get_color():
-                            print("En passant left")
+                            # Pawn to left can 'en passant'
                             last_clicked['piece'].en_passant = True
                             last_clicked['counter'] = 0
                 except:
