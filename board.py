@@ -210,7 +210,7 @@ class Board:
         
         pygame.display.update()
     
-    def check_piece_promotion(self, piece, current_player, screen, text_details, row, p1):
+    def check_piece_promotion(self, piece, current_player, screen, text_details, row, p1, size):
         """Check if any piece in row can be promoted"""
 
         if isinstance(piece['piece']['piece'], Pawn):
@@ -221,23 +221,23 @@ class Board:
                 # Player 1 is white
                 if current_player == p1:
                     if row == 0:
-                        current_player.promote_piece(self, piece, row, col)
+                        current_player.promote_piece(self, piece, row, col, screen, text_details, size)
                         self.update(screen, current_player, text_details)
                 # Player 2 is white
                 else:
                     if row == self.rows - 1:
-                        current_player.promote_piece(self, piece, row, col)
+                        current_player.promote_piece(self, piece, row, col, screen, text_details, size)
                         self.update(screen, current_player, text_details)
             else:
                 # Player 1 is black
                 if current_player == p1:
                     if row == 0:
-                        current_player.promote_piece(self, piece, row, col)
+                        current_player.promote_piece(self, piece, row, col, screen, text_details, size)
                         self.update(screen, current_player, text_details)
                 # Player 2 is black
                 else:
                     if row == self.rows - 1:
-                        current_player.promote_piece(self, piece, row, col)
+                        current_player.promote_piece(self, piece, row, col, screen, text_details, size)
                         self.update(screen, current_player, text_details)
     
     def en_passant(self, last_clicked, new_click, last_position_x, last_position_y, adjust):
