@@ -1,6 +1,7 @@
 import pygame
 from Pieces.empty import Empty
 from Pieces.pawn import Pawn
+from Pieces.king import King
 
 def get_player_colors(p1, p2):
     """Ask player 1 for choice of piece color"""
@@ -127,3 +128,41 @@ def remove_en_passant(p1, p2):
                 p['counter'] += 1
             elif p['piece'].en_passant and p['counter'] == 1:
                 p['piece'].not_en_passant()
+
+def check_mate(player, p1, p2):
+    """Check for game over"""
+    piece = None
+
+    # Get King
+    for p in player.pieces:
+        if isinstance(p['piece'], King):
+            piece = p['piece']
+            break
+
+    if piece == None:
+        if player == p1:
+            p2.set_winner()
+        else:
+            p1.set_winner()
+        return True
+    else:
+        return False
+
+def game_over(player, p1, p2, text_details, screen, size, game_draw):
+    """Display game over screen"""
+    surface = pygame.Surface(size, pygame.SRCALPHA)
+    surface.convert_alpha()
+    surface.fill((0, 0, 0, 180))
+    screen.blit(surface, (0, 0))
+    winner = None
+    text_details['font'] = pygame.font.Font('freesansbold.ttf', 30)
+
+    if p1.winner:
+        winner = text_details['font'].render(f"{p1.get_name()} Wins!!!", True, text_details['white'])
+    elif p2.winner:
+        winner = text_details['font'].render(f"{p2.get_name()} Wins!!!", True, text_details['white'])
+    elif game_draw:
+        winner = text_details['font'].render("Draw!", True, text_details['white'])
+    
+    winner_rect = winner.get_rect(center=(size[0] / 2, size[1] / 2))
+    screen.blit(winner, winner_rect)
