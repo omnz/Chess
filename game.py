@@ -1,30 +1,57 @@
-import pygame
+import pygame, sys
 from Pieces.empty import Empty
 from Pieces.pawn import Pawn
 from Pieces.king import King
 
-def get_player_colors(p1, p2):
+def get_player_colors(p1, p2, size, text_details, screen):
     """Ask player 1 for choice of piece color"""
-    while True:
-        color = input(f"{p1.get_name()}, which color piece are you (white/black)? ")
-        if color[0].lower() == 'w':
-            p1.set_piece_color('white')
-            p2.set_piece_color('black')
+    surface = pygame.Surface(size, pygame.SRCALPHA)
+    surface.convert_alpha()
+    surface.fill((0, 0, 0, 180))
+    screen.blit(surface, (0, 0))
+    text_details['font'] = pygame.font.Font('freesansbold.ttf', 30)
+    x = size[0] / 2
+    y = size[1] / 2
+    color = (185, 153, 118)
 
-            print(f"{p1.get_name()}, your piece color is {p1.get_piece_color()}.")
-            print(f"{p2.get_name()}, your piece color is {p2.get_piece_color()}.")
-            break
-        elif color[0].lower() == 'b':
-            p1.set_piece_color('black')
-            p2.set_piece_color('white')
+    color_text = text_details['font'].render(f"{p1.get_name()}, choose a piece color:", True, text_details['white'])
+    color_rect = color_text.get_rect(center=((size[0] / 2), (size[1] / 2) - 70))
 
-            print(f"{p1.get_name()}, your piece color is {p1.get_piece_color()}.")
-            print(f"{p2.get_name()}, your piece color is {p2.get_piece_color()}.")
-            break
-        else:
-            print("Error: Did not enter white or black!\n")
+    piece_white = pygame.image.load(f'Sprites/knight_white.png')
+    piece_white_rect = piece_white.get_rect(center=(x - 70, y + 40))
+    piece_black = pygame.image.load(f'Sprites/knight_black.png')
+    piece_black_rect = piece_black.get_rect(center=(x + 70, y + 40))
 
-    print()
+    
+    pygame.draw.rect(screen, color, (x - 125, y - 10, 250, 100))
+    screen.blit(color_text, color_rect)
+    screen.blit(piece_white, piece_white_rect)
+    screen.blit(piece_black, piece_black_rect)
+    pygame.display.update()
+
+    text_details['font'] = pygame.font.Font('freesansbold.ttf', 20)
+    pick_color = True
+
+    # Get player 1's choice of color, then set both player's
+    while pick_color:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_click = pygame.mouse.get_pos()
+
+                if piece_white_rect.collidepoint(mouse_click):
+                    p1.set_piece_color('white')
+                    p2.set_piece_color('black')
+                    pick_color = False
+                    break
+
+                elif piece_black_rect.collidepoint(mouse_click):
+                    p1.set_piece_color('black')
+                    p2.set_piece_color('white')
+                    pick_color = False
+                    break
 
 def setup(board, p1, p2, turn_order):
     """Set up the board and turn order"""
