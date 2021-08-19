@@ -6,16 +6,6 @@ from player import Player
 from Pieces.empty import Empty
 from Pieces.pawn import Pawn
 
-
-# Create players and board
-p1 = Player('Player 1')
-p2 = Player('Player 2')
-board = Board()
-turn_order = []
-
-game.get_player_colors(p1, p2)
-game.setup(board, p1, p2, turn_order)
-
 # GAME
 pygame.init()
 pygame.display.set_caption('Chess')
@@ -35,6 +25,15 @@ text_details = {
     'total_turns': 0
 }
 
+# Create players and board
+p1 = Player('Player 1')
+p2 = Player('Player 2')
+board = Board()
+turn_order = []
+
+game.get_player_colors(p1, p2, size, text_details, screen)
+game.setup(board, p1, p2, turn_order)
+
 running = True
 game_draw = False
 game_over = False
@@ -42,6 +41,7 @@ game_over_count = 0
 possible_pos = []
 current_player = turn_order[0]
 clicks = []
+
 
 board.draw_pieces(screen, current_player, text_details)
 
@@ -122,7 +122,7 @@ while running:
                 game.remove_en_passant(p1, p2)
 
                 # Check if piece can be promoted
-                board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, 0, p1)
+                board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, 0, p1, size)
 
                 # Get next player and update game
                 game.empty_list(clicks)
@@ -135,7 +135,7 @@ while running:
 
                 # Check for draw (W.I.P.)
     
-        if game_over and game_over_count == 0:
+        if game_over and game_over_count == 0 and running:
             game.game_over(current_player, p1, p2, text_details, screen, size, game_draw)
             game_over_count += 1
 
