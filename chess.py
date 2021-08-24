@@ -133,8 +133,6 @@ while running:
                     current_player = game.next_turn(current_player, turn_order, p1, p2)
                     text_details['total_turns'] += 1
                     board.update(screen, current_player, text_details)
-
-                    # Check for draw (W.I.P.)
     
         if game_over and game_over_count == 0 and running:
             game.game_over(current_player, p1, p2, text_details, screen, size, game_draw)
