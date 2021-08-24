@@ -121,19 +121,20 @@ while running:
                 board.update(screen, current_player, text_details)
                 game.remove_en_passant(p1, p2)
 
-                # Check if piece can be promoted
-                board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, 0, p1, size)
-
-                # Get next player and update game
-                game.empty_list(clicks)
-                current_player = game.next_turn(current_player, turn_order, p1, p2)
-                text_details['total_turns'] += 1
-                board.update(screen, current_player, text_details)
-
                 # Check for game over
                 game_over = game.check_mate(current_player, p1, p2)
 
-                # Check for draw (W.I.P.)
+                if game_over == False:
+                    # Check if piece can be promoted
+                    board.check_piece_promotion(clicks[0]['piece'], current_player, screen, text_details, 0, p1, size)
+
+                    # Get next player and update game
+                    game.empty_list(clicks)
+                    current_player = game.next_turn(current_player, turn_order, p1, p2)
+                    text_details['total_turns'] += 1
+                    board.update(screen, current_player, text_details)
+
+                    # Check for draw (W.I.P.)
     
         if game_over and game_over_count == 0 and running:
             game.game_over(current_player, p1, p2, text_details, screen, size, game_draw)

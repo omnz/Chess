@@ -41,16 +41,17 @@ class Pawn(Piece):
                     continue
             # Diagonal left
             elif count == 2:
-                try:
-                    # Check if new position is NOT empty and is held by enemy
-                    if not isinstance(board.board[row - 1 * adjust][col - 1]['piece'], Empty):
-                        if board.board[row - 1 * adjust][col - 1]['piece']['piece'].get_color() != self.get_color():
-                            row = row - 1 * adjust
-                            col = col - 1
-                    else:
+                if col != 0:
+                    try:
+                        # Check if new position is NOT empty and is held by enemy
+                        if not isinstance(board.board[row - 1 * adjust][col - 1]['piece'], Empty):
+                            if board.board[row - 1 * adjust][col - 1]['piece']['piece'].get_color() != self.get_color():
+                                row = row - 1 * adjust
+                                col = col - 1
+                        else:
+                            continue
+                    except:
                         continue
-                except:
-                    continue
             elif count == 3:
                 try:
                     # Check if new position is empty and is en passant
