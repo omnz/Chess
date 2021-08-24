@@ -156,24 +156,36 @@ def remove_en_passant(p1, p2):
             elif p['piece'].en_passant and p['counter'] == 1:
                 p['piece'].not_en_passant()
 
-def check_mate(player, p1, p2):
+def check_mate(current_player, p1, p2):
     """Check for game over"""
     piece = None
+    players = None
+    result = False
 
-    # Get King
-    for p in player.pieces:
-        if isinstance(p['piece'], King):
-            piece = p['piece']
-            break
-
-    if piece == None:
-        if player == p1:
-            p2.set_winner()
-        else:
-            p1.set_winner()
-        return True
+    if current_player == p1:
+        players = [p2, p1]
     else:
-        return False
+        players = [p1, p2]
+
+    for player in players:
+            # Get King
+            for p in player.pieces:
+                if isinstance(p['piece'], King):
+                    piece = p['piece']
+                    break
+            
+            print(piece)
+            if piece == None:
+                if current_player == p1:
+                    p1.set_winner()
+                else:
+                    p2.set_winner()
+                result = True
+                break
+            else:
+                result = False
+
+    return result
 
 def game_over(player, p1, p2, text_details, screen, size, game_draw):
     """Display game over screen"""
